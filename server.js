@@ -11,6 +11,16 @@ const BASE = "https://pelisjuanita.com";
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 
+// ── DEBUG ─────────────────────────────────────────────────────────────────────
+app.get("/api/debug", async (req, res) => {
+  try {
+    const html = await fetchHTML(`${BASE}/movies/search?s=mr+robot`);
+    res.send(html.substring(0, 8000));
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // ── Browser helper ────────────────────────────────────────────────────────────
 
 async function fetchHTML(url) {
