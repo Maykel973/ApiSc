@@ -45,12 +45,18 @@ async function fetchHTML(url) {
 
   try {
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 25000 });
-    await page.waitForTimeout(2500);
+
+    // Esperar a que Cloudflare pase
+    await page.waitForFunction(
+      () => !document.title.includes("momento") && !document.title.includes("Just a moment"),
+      { timeout: 15000 }
+    ).catch(() => {});
+
+    await page.waitForTimeout(3000);
     return await page.content();
   } finally {
     await browser.close();
   }
-}
 
 // ── GET /api/search?q=titulo ──────────────────────────────────────────────────
 
